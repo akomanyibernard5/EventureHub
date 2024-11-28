@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-gray-900 text-white;
+  }
+}
+
+@layer components {
+  .logo {
+    will-change: filter;
+    transition: all 300ms;
+  }
+  
+  .logo:hover {
+    filter: drop-shadow(0 0 2em #646cffaa);
+  }
+  
+  .logo.react:hover {
+    filter: drop-shadow(0 0 2em #61dafbaa);
+  }
+}
