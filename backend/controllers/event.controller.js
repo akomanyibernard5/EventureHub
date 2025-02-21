@@ -419,6 +419,8 @@ exports.getUserStats = async (req, res) => {
       mostFrequentCategory: mostCommonCategory,
       averageTicketPrice,
       hourlyStats,
+      topEventsRevenue,
+      dailyStats,
       eventTypes,
       events
     });
