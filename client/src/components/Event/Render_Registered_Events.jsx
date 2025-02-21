@@ -222,7 +222,7 @@ function Render_Registered_Events({ registeredEvents, fetchRegisteredEvents, isE
               &times;
             </button>
 
-            <h3 className="text-xl font-bold text-center mb-4 text-black">Image Analysis</h3>
+            <h3 className="text-xl font-bold text-center mb-4 text-black">Analyzing your photo</h3>
             {isRelatedToEvents ?
               (
                 <CircleCheckBig />
