@@ -1,4 +1,5 @@
 import React, { useState, useContext } from 'react'
+import { CircleDollarSign } from "lucide-react";
 import { EventContext } from "../../contexts/EventContext.jsx";
 import toast from 'react-hot-toast'
 
@@ -160,14 +161,11 @@ const EventDetailsModal = ({ isOpen, onClose, event, onEventDeleted }) => {
                 <span>{event.currentAttendees}/{event.maxAttendees} Attendees</span>
               </div>
 
-              <div className="flex items-center gap-3 text-gray-300">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
-                    d="M15 9a2 2 0 10-4 0v5a2 2 0 104 0V9z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
-                    d="M19 9l-7 7-7-7" />
-                </svg>
-                <span>${event.ticketPrice.toLocaleString()}</span>
+             <div className="flex items-center gap-2 text-gray-300 justify-start">
+                <span className="flex items-center">
+                  <CircleDollarSign className="mr-1" />
+                  <span className="ml-2">{event.ticketPrice.toLocaleString()}</span>
+                </span>
               </div>
             </div>
           </div>
