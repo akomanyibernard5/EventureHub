@@ -400,10 +400,9 @@ exports.getUserStats = async (req, res) => {
     const mostCommonCategory = mostFrequentCategory ?
       Object.keys(mostFrequentCategory).reduce((a, b) => mostFrequentCategory[a] > mostFrequentCategory[b] ? a : b)
       : 'N/A';
-
     const averageTicketPrice = events.length > 0 ? (totalRevenue / totalAttendees) || 0 : 0;
-
     const hourlyStats = await generateHourlyStats(userId);
+     const eventTypes = await generateEventTypeStats(events);
 
     res.json({
       success: true,
@@ -418,6 +417,7 @@ exports.getUserStats = async (req, res) => {
       mostFrequentCategory: mostCommonCategory,
       averageTicketPrice,
       hourlyStats,
+      eventTypes,
       events
     });
   } catch (error) {
@@ -441,6 +441,28 @@ const generateHourlyStats = async (userId) => {
   return hourlyStats;
 };
 
+const generateEventTypeStats = async (events) => {
+  const eventTypeCounts = {
+    'in-person': 0,
+    'virtual': 0,
+    'hybrid': 0
+  };
+
+  events.forEach(({ eventType }) => {
+    if (eventTypeCounts.hasOwnProperty(eventType)) {
+      eventTypeCounts[eventType]++;
+    }
+  });
+
+  const totalEvents = events.length || 1;
+  const eventTypeStats = Object.entries(eventTypeCounts).map(([name, count]) => ({
+    name,
+    value: parseFloat(((count / totalEvents) * 100).toFixed(2))
+  }));
+
+  console.log(eventTypeStats);
+  return eventTypeStats;
+};
 
 
 async function checkLabelsRelation(labels, category) {
@@ -458,8 +480,6 @@ async function checkLabelsRelation(labels, category) {
     return null;
   }
 }
-
-
 
 exports.uploadEventPhotos = async (req, res) => {
   try {
