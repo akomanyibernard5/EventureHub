@@ -401,8 +401,10 @@ exports.getUserStats = async (req, res) => {
       Object.keys(mostFrequentCategory).reduce((a, b) => mostFrequentCategory[a] > mostFrequentCategory[b] ? a : b)
       : 'N/A';
     const averageTicketPrice = events.length > 0 ? (totalRevenue / totalAttendees) || 0 : 0;
+    const topEventsRevenue = await generateTopEventsRevenue(userId);
+    const dailyStats = await generateDailyStats(userId);
     const hourlyStats = await generateHourlyStats(userId);
-     const eventTypes = await generateEventTypeStats(events);
+    const eventTypes = await generateEventTypeStats(events);
 
     res.json({
       success: true,
@@ -464,6 +466,41 @@ const generateEventTypeStats = async (events) => {
   return eventTypeStats;
 };
 
+const generateDailyStats = async (userId) => {
+  const last30Days = new Date();
+  last30Days.setDate(last30Days.getDate() - 30);
+  const events = await Event.find({ creator: userId, createdAt: { $gte: last30Days } });
+
+  let dailyStats = Array.from({ length: 30 }, (_, i) => ({ day: (i + 1).toString(), events: 0 }));
+
+  events.forEach(event => {
+    const eventDate = new Date(event.createdAt);
+    const eventDay = eventDate.getDate();
+    const dayIndex = eventDay - 1;
+    dailyStats[dayIndex].events += 1;
+  });
+
+  return dailyStats;
+};
+
+const generateTopEventsRevenue = async (userId) => {
+  const events = await Event.find({ creator: userId });
+
+  const eventsWithRevenue = events.map(event => {
+    const revenue = event.ticketPrice * event.currentAttendees;
+    return { title: event.title, revenue };
+  });
+
+  const sortedEvents = eventsWithRevenue.sort((a, b) => b.revenue - a.revenue).slice(0, 10);
+
+
+  const topEventsRevenue = sortedEvents.map((event, index) => ({
+    event: event.title,
+    revenue: event.revenue
+  }));
+
+  return topEventsRevenue;
+};
 
 async function checkLabelsRelation(labels, category) {
   const prompt = `Given the following labels: ${labels}. Determine if these labels are related to "${category}". Respond with either "True" or "False" only.`;
