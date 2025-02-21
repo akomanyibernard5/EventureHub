@@ -72,6 +72,10 @@ const eventSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
+  uploadCount: {
+    type: Number,
+    default: 0
+  },
   status: {
     type: String,
     enum: ['draft', 'published', 'cancelled', 'completed'],

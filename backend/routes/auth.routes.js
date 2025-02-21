@@ -3,6 +3,7 @@ const router = express.Router();
 const { signup, login, logout, changePassword } = require('../controllers/auth.controller');
 const { body } = require('express-validator');
 const protect = require('../middleware/auth.middleware');
+const { googleLogin, requestOtp, verifyOtp, resetPassword, googleSignup } = require('../controllers/user.controller');
 
 router.post('/signup',
   [
@@ -23,8 +24,16 @@ router.post('/login',
   login
 );
 
+router.post('/google', googleLogin);
+router.post('/google-signup', googleSignup);
+
+
 router.post('/logout', protect, logout);
 
 router.post('/change-password', protect, changePassword);
+
+router.post('/send-otp', requestOtp);
+router.post('/verify-otp', verifyOtp);
+router.post('/reset-password', resetPassword);
 
 module.exports = router; 
